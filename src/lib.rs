@@ -1497,7 +1497,7 @@ impl GooseAttack {
             // Take the users vector out of the GooseAttackRunState object so it can be
             // consumed by futures::future::join_all().
             let users = std::mem::take(&mut goose_attack_run_state.users);
-            futures::future::join_all(users).await;
+            tokio::time::timeout(Duration::from_secs(5), futures::future::join_all(users)).await;
             debug!("all users exited");
 
             // If the logger thread is enabled, tell it to flush and exit.
